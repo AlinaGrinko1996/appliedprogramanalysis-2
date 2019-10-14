@@ -18,8 +18,8 @@ public class Main {
         for (final File fileEntry : Objects.requireNonNull(DIRECTORY.listFiles())) {
             CompilationUnit compilationUnit = StaticJavaParser.parse(fileEntry);
 
-            VoidVisitor<?> classContainmentVisitor = new ClassContainmentVisitor(classHierarchyGraph);
-            classContainmentVisitor.visit(compilationUnit, null);
+//            VoidVisitor<?> classContainmentVisitor = new ClassContainmentVisitor(classHierarchyGraph);
+//            classContainmentVisitor.visit(compilationUnit, null);
         }
         System.out.println(classHierarchyGraph.toString());
     }
