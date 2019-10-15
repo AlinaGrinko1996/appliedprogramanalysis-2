@@ -11,6 +11,14 @@ public class GraphNode {
         this.label = label;
     }
 
+    public String getId() {
+        return id;
+    }
+
+    public NodeType getType() {
+        return nodeType;
+    }
+
     @Override
     public String toString() {
         return String.format("node [\n\t\tid %s\n\t\tlabel %s\n\t]\n\t", id, label);

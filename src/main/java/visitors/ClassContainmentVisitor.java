@@ -1,17 +1,22 @@
 package visitors;
 
+import com.github.javaparser.ast.CompilationUnit;
 import com.github.javaparser.ast.Node;
-import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
-import com.github.javaparser.ast.body.ConstructorDeclaration;
-import com.github.javaparser.ast.body.MethodDeclaration;
-import com.github.javaparser.ast.stmt.BlockStmt;
-import com.github.javaparser.ast.stmt.Statement;
+import com.github.javaparser.ast.body.*;
+import com.github.javaparser.ast.expr.ConditionalExpr;
+import com.github.javaparser.ast.expr.LambdaExpr;
+import com.github.javaparser.ast.expr.MethodCallExpr;
+import com.github.javaparser.ast.modules.ModuleDeclaration;
+import com.github.javaparser.ast.stmt.*;
 import com.github.javaparser.ast.visitor.VoidVisitorAdapter;
 import container.MetricsTables;
 import graph.Edge;
 import graph.Graph;
 import graph.GraphNode;
 import graph.NodeType;
+
+import java.util.Arrays;
+import java.util.List;
 
 public class ClassContainmentVisitor extends VoidVisitorAdapter<Void> {
     private Graph graph;
@@ -32,7 +37,7 @@ public class ClassContainmentVisitor extends VoidVisitorAdapter<Void> {
         graph.nodes.add(node);
 
         for (Node childNode: n.getChildNodes()) {
-            Class nodeClass = node.getClass();
+            Class nodeClass = childNode.getClass();
             if (nodeClass.equals(ConstructorDeclaration.class)) {
                 processConstructor((ConstructorDeclaration) childNode, n.getNameAsString());
             } else if (nodeClass.equals(MethodDeclaration.class)) {
@@ -60,6 +65,7 @@ public class ClassContainmentVisitor extends VoidVisitorAdapter<Void> {
         Edge edge = new Edge(method.getNameAsString(), className, "");
         graph.edges.add(edge);
 
+        metricsTables.incrementNumberOfMethods(className);
         method.getBody().ifPresent(body -> processMethodOrConstructorBody(body, methodName));
     }
 
@@ -70,59 +76,35 @@ public class ClassContainmentVisitor extends VoidVisitorAdapter<Void> {
     }
 
     private void processStatementRecursively(Statement statement, String methodName, String parentNode) {
-        //todo - here we need process block statement
+        //todo - stack overflow
         if (statement.isForEachStmt() || statement.isForStmt() || statement.isWhileStmt() || statement.isDoStmt()) {
             String newNodeName = "loop_" + statement.hashCode();
+            addLoopNode(parentNode, newNodeName);
+            metricsTables.incrementNumberOfNestedLoops(methodName);
             for (Node node: statement.getChildNodes()) {
-                if (Statement.class.isAssignableFrom(node.getClass())) {
+                if (isNodeWithBody(node)) {
                     processStatementRecursively(statement, methodName, newNodeName);
                 }
+                checkNodeForMethodCall(node, methodName);
             }
         } else if (statement.isIfStmt()) {
             String newNodeName = "if_" + statement.hashCode();
+            addIfNode(parentNode, newNodeName);
             for (Node node: statement.getChildNodes()) {
-                if (Statement.class.isAssignableFrom(node.getClass())) {
+                if (isNodeWithBody(node)) {
                     processStatementRecursively(statement, methodName, newNodeName);
                 }
+                checkNodeForMethodCall(node, methodName);
             }
-            //statement.asIfStmt().getElseStmt();
-            //statement.asIfStmt().getThenStmt();
         } else if (statement.isBlockStmt() || statement.isSwitchStmt() || statement.isSynchronizedStmt()
                 || statement.isTryStmt()) {
             for (Node node: statement.getChildNodes()) {
-                if (Statement.class.isAssignableFrom(node.getClass())) {
+                if (isNodeWithBody(node)) {
                     processStatementRecursively(statement, methodName, parentNode);
                 }
+                checkNodeForMethodCall(node, methodName);
             }
         }
-//        statement.ifForEachStmt(st -> {
-//            String name = "for_each_node_" + st.hashCode();
-//            addIfNode(parentNode, name);
-//            for (Statement child: st.getBody().asBlockStmt().getStatements()) {
-//                processStatementRecursively(child, methodName, name);
-//            }
-//        });
-//        statement.ifForStmt(st -> {
-//            String name = "for_node_" + st.hashCode();
-//            addIfNode(parentNode, name);
-//            for (Statement child: st.getBody().asBlockStmt().getStatements()) {
-//                processStatementRecursively(child, methodName, name);
-//            }
-//        });
-//        statement.ifWhileStmt(st -> {
-//            String name = "while_node_" + st.hashCode();
-//            addIfNode(parentNode, name);
-//            for (Statement child: st.getBody().asBlockStmt().getStatements()) {
-//                processStatementRecursively(child, methodName, name);
-//            }
-//        });
-//        statement.ifIfStmt(st -> {
-//            String name = "is_node_" + st.hashCode();
-//            addIfNode(parentNode, name);
-//            for (Statement child: st.asIfStmt().getStatements()) {
-//                processStatementRecursively(child, methodName, name);
-//            }
-//        });
     }
 
     private void addLoopNode(String fromNode, String toNode) {
@@ -139,5 +121,25 @@ public class ClassContainmentVisitor extends VoidVisitorAdapter<Void> {
 
         Edge edge = new Edge(fromNode, toNode, "");
         graph.edges.add(edge);
+    }
+
+    private void checkNodeForMethodCall(Node node, String methodName) {
+        if (node instanceof MethodCallExpr) {
+            //assert node instanceof MethodCallExpr;
+            MethodCallExpr methodCall = (MethodCallExpr) node;
+            methodCall.getScope().ifPresent(scope -> {
+                if (!scope.isThisExpr()) {
+                    metricsTables.incrementNumberOfMethodsCalled(methodName);
+                }
+            });
+        }
+    }
+
+    private boolean isNodeWithBody(Node node) {
+        Class nodeClass = node.getClass();
+        List<Class> nodesList = Arrays.asList(BlockStmt.class, TryStmt.class, WhileStmt.class, IfStmt.class,
+                ForStmt.class, ForEachStmt.class, SwitchStmt.class, SynchronizedStmt.class,
+                ConditionalExpr.class, LambdaExpr.class, InitializerDeclaration.class);
+        return nodesList.contains(nodeClass);
     }
 }
