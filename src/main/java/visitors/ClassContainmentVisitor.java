@@ -1,18 +1,16 @@
 package visitors;
 
-import com.github.javaparser.ast.CompilationUnit;
 import com.github.javaparser.ast.Node;
 import com.github.javaparser.ast.body.*;
 import com.github.javaparser.ast.expr.ConditionalExpr;
 import com.github.javaparser.ast.expr.LambdaExpr;
 import com.github.javaparser.ast.expr.MethodCallExpr;
-import com.github.javaparser.ast.modules.ModuleDeclaration;
 import com.github.javaparser.ast.stmt.*;
 import com.github.javaparser.ast.visitor.VoidVisitorAdapter;
 import container.MetricsTables;
 import graph.Edge;
 import graph.Graph;
-import graph.GraphNode;
+import graph.CustomNode;
 import graph.NodeType;
 
 import java.util.Arrays;
@@ -33,7 +31,7 @@ public class ClassContainmentVisitor extends VoidVisitorAdapter<Void> {
         super.visit(n, arg);
 
         NodeType nodeType  = n.isInterface() ? NodeType.INTERFACE : NodeType.CLASS;
-        GraphNode node = new GraphNode(n.getNameAsString(), nodeType, n.getNameAsString());
+        CustomNode node = new CustomNode(n.getNameAsString(), nodeType, n.getNameAsString());
         graph.nodes.add(node);
 
         for (Node childNode: n.getChildNodes()) {
@@ -48,7 +46,7 @@ public class ClassContainmentVisitor extends VoidVisitorAdapter<Void> {
 
     private void processConstructor(ConstructorDeclaration constructor, String className) {
         String constructorName =  String.format("%s.%s", className, constructor.getNameAsString());
-        GraphNode node = new GraphNode(constructor.getNameAsString(), NodeType.CONSTRUCTOR, constructorName);
+        CustomNode node = new CustomNode(constructor.getNameAsString(), NodeType.CONSTRUCTOR, constructorName);
         graph.nodes.add(node);
 
         Edge edge = new Edge(constructor.getNameAsString(), className, "");
@@ -59,7 +57,7 @@ public class ClassContainmentVisitor extends VoidVisitorAdapter<Void> {
 
     private void processMethod(MethodDeclaration method, String className) {
         String methodName =  String.format("%s.%s", className, method.getNameAsString());
-        GraphNode node = new GraphNode(method.getNameAsString(), NodeType.METHOD, methodName);
+        CustomNode node = new CustomNode(method.getNameAsString(), NodeType.METHOD, methodName);
         graph.nodes.add(node);
 
         Edge edge = new Edge(method.getNameAsString(), className, "");
@@ -108,7 +106,7 @@ public class ClassContainmentVisitor extends VoidVisitorAdapter<Void> {
     }
 
     private void addLoopNode(String fromNode, String toNode) {
-        GraphNode node = new GraphNode(toNode, NodeType.LOOP_STATEMENT, toNode);
+        CustomNode node = new CustomNode(toNode, NodeType.LOOP_STATEMENT, toNode);
         graph.nodes.add(node);
 
         Edge edge = new Edge(fromNode, toNode, "");
@@ -116,7 +114,7 @@ public class ClassContainmentVisitor extends VoidVisitorAdapter<Void> {
     }
 
     private void addIfNode(String fromNode, String toNode) {
-        GraphNode node = new GraphNode(toNode, NodeType.IF_STATEMENT, toNode);
+        CustomNode node = new CustomNode(toNode, NodeType.IF_STATEMENT, toNode);
         graph.nodes.add(node);
 
         Edge edge = new Edge(fromNode, toNode, "");

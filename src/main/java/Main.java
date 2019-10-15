@@ -5,26 +5,31 @@ import container.MetricsTables;
 import graph.Graph;
 import visitors.ContainmentVisitor;
 
-import java.io.File;
-import java.io.FileNotFoundException;
+import java.io.*;
 import java.util.Objects;
 
 public class Main {
     public static File DIRECTORY = new File(".\\examples");
 
-    public static void main(String... args) throws FileNotFoundException {
+    public static void main(String... args) throws IOException {
 
-        Graph classHierarchyGraph = new Graph();
+        Graph classContainmentGraph = new Graph();
         MetricsTables metricsTables = new MetricsTables();
 
         for (final File fileEntry : Objects.requireNonNull(DIRECTORY.listFiles())) {
             CompilationUnit compilationUnit = StaticJavaParser.parse(fileEntry);
 
-            VoidVisitor<?> containmentVisitorTest = new ContainmentVisitor(classHierarchyGraph);
+            VoidVisitor<?> containmentVisitorTest = new ContainmentVisitor(classContainmentGraph);
             containmentVisitorTest.visit(compilationUnit, null);
 //            VoidVisitor<?> classContainmentVisitor = new ClassContainmentVisitor(classHierarchyGraph, metricsTables);
 //            classContainmentVisitor.visit(compilationUnit, null);
         }
-        System.out.println(classHierarchyGraph.toString());
+        outputToFile(classContainmentGraph.toGML(), "graph.gml");
+    }
+
+    private static void outputToFile(String output, String filename) throws IOException {
+        BufferedWriter writer = new BufferedWriter(new FileWriter(filename));
+        writer.write(output);
+        writer.close();
     }
 }

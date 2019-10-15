@@ -1,11 +1,11 @@
 package graph;
 
-public class GraphNode {
+public class CustomNode {
     private String id;
     private String label;
     private NodeType nodeType;
 
-    public GraphNode(String id, NodeType nodeType, String label) {
+    public CustomNode(String id, NodeType nodeType, String label) {
         this.id = id;
         this.nodeType = nodeType;
         this.label = label;

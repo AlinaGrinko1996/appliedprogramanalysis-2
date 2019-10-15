@@ -5,7 +5,7 @@ import com.github.javaparser.ast.type.ClassOrInterfaceType;
 import com.github.javaparser.ast.visitor.VoidVisitorAdapter;
 import graph.Edge;
 import graph.Graph;
-import graph.GraphNode;
+import graph.CustomNode;
 import graph.NodeType;
 import utils.ParserUtils;
 
@@ -22,7 +22,7 @@ public class ClassHierarchyVisitor extends VoidVisitorAdapter<Void> {
         super.visit(n, arg);
 
         NodeType nodeType  = n.isInterface() ? NodeType.INTERFACE : NodeType.CLASS;
-        GraphNode node = new GraphNode(n.getNameAsString(), nodeType, n.getNameAsString());
+        CustomNode node = new CustomNode(n.getNameAsString(), nodeType, n.getNameAsString());
         graph.nodes.add(node);
 
         for (ClassOrInterfaceType classOrInterface : n.getExtendedTypes()) {

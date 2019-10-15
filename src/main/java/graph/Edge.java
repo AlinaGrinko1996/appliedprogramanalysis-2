@@ -11,6 +11,14 @@ public class Edge {
         this.label = label;
     }
 
+    public String getSource() {
+        return source;
+    }
+
+    public String getTarget() {
+        return target;
+    }
+
     @Override
     public String toString() {
         return String.format("edge [\n\t\tsource %s\n\t\ttarget %s\n\t\tlabel %s\n\t]\n\t", source, target, label);
