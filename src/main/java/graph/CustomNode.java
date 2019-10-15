@@ -1,17 +1,17 @@
 package graph;
 
 public class CustomNode {
-    private String id;
+    private int id;
     private String label;
     private NodeType nodeType;
 
-    public CustomNode(String id, NodeType nodeType, String label) {
+    public CustomNode(int id, NodeType nodeType, String label) {
         this.id = id;
         this.nodeType = nodeType;
         this.label = label;
     }
 
-    public String getId() {
+    public int getId() {
         return id;
     }
 
@@ -21,6 +21,7 @@ public class CustomNode {
 
     @Override
     public String toString() {
-        return String.format("node [\n\t\tid %s\n\t\tlabel %s\n\t]\n\t", id, label);
+        return String.format("node [\n\t\tid %d\n\t\tlabel \"%s\"\n\t", id, label)
+                + "\t graphics [ type \"roundrectangle\" fill \"#FFFF88\" ] ]\n";
     }
 }

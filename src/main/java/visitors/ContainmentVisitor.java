@@ -41,35 +41,35 @@ public class ContainmentVisitor extends VoidVisitorAdapter<Void> {
 
     @Override
     public void visit(final IfStmt n, Void arg) {
-        scope.enterConditional("if_" + n.hashCode());
+        scope.enterConditional("if_stmt");
         super.visit(n, arg);
         scope.leaveScope();
     }
 
     @Override
     public void visit(final SwitchStmt n, Void arg) {
-        scope.enterConditional("switch_" + n.hashCode());
+        scope.enterConditional("switch_stmt");
         super.visit(n, arg);
         scope.leaveScope();
     }
 
     @Override
     public void visit(final ForStmt n, Void arg) {
-        scope.enterLoop("for_" + n.hashCode());
+        scope.enterLoop("for_loop");
         super.visit(n, arg);
         scope.leaveScope();
     }
 
     @Override
     public void visit(final WhileStmt n, Void arg) {
-        scope.enterLoop("while_" + n.hashCode());
+        scope.enterLoop("while_loop");
         super.visit(n, arg);
         scope.leaveScope();
     }
 
     @Override
     public void visit(final ForEachStmt n, Void arg) {
-        scope.enterLoop("foreach_" + n.hashCode());
+        scope.enterLoop("foreach_loop");
         super.visit(n, arg);
         scope.leaveScope();
     }

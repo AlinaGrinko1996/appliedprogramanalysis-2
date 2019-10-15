@@ -13,9 +13,11 @@ public class Scope {
     private Stack<CustomNode> lastNodes = new Stack<>();
 
     private Graph graph;
+    private int nodeCounter = 0;
 
     public void setGraph(Graph graph) {
         this.graph = graph;
+        this.nodeCounter = graph.nodes.size();
     }
 
     public Graph getGraph() {
@@ -23,30 +25,30 @@ public class Scope {
     }
 
     public void enterClass(String className) {
-        CustomNode node = new CustomNode(className, NodeType.CLASS, className);
+        CustomNode node = new CustomNode(++nodeCounter, NodeType.CLASS, className);
         currentClass = className;
         lastNodes.push(node);
     }
 
     public void enterConstructor(String constructorName) {
         currentMethod = constructorName + ".init";
-        CustomNode node = new CustomNode(currentMethod, NodeType.CONSTRUCTOR, constructorName);
+        CustomNode node = new CustomNode(++nodeCounter, NodeType.CONSTRUCTOR, currentMethod);
         lastNodes.push(node);
     }
 
     public void enterMethod(String methodName) {
         currentMethod = String.format("%s.%s", currentClass, methodName);
-        CustomNode node = new CustomNode(currentMethod, NodeType.METHOD, methodName);
+        CustomNode node = new CustomNode(++nodeCounter, NodeType.METHOD, currentMethod);
         lastNodes.push(node);
     }
 
     public void enterLoop(String loopName) {
-        CustomNode node = new CustomNode(loopName, NodeType.LOOP_STATEMENT, "loop");
+        CustomNode node = new CustomNode(++nodeCounter, NodeType.LOOP_STATEMENT, loopName);
         lastNodes.push(node);
     }
 
     public void enterConditional(String ifName) {
-        CustomNode node = new CustomNode(ifName, NodeType.IF_STATEMENT, "if");
+        CustomNode node = new CustomNode(++nodeCounter, NodeType.IF_STATEMENT, ifName);
         lastNodes.push(node);
     }
 
@@ -66,7 +68,7 @@ public class Scope {
 
         if (!lastNodes.empty()) {
             CustomNode nodeBefore = lastNodes.peek();
-            Edge edge = new Edge(nodeBefore.getId(), lastNode.getId(), "");
+            Edge edge = new Edge(nodeBefore, lastNode, "");
             graph.edges.add(edge);
         }
     }

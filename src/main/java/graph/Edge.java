@@ -1,26 +1,25 @@
 package graph;
 
 public class Edge {
-    private String source;
-    private String target;
+    private final String GRAPHICS_STANDARD = "\t graphics [width 1 type \"line\" fill \"#000000\" arrow \"last\"] ]"+ "\n";
+    private CustomNode source;
+    private CustomNode target;
     private String label;
+    private String graphics;
 
-    public Edge(String source, String target, String label) {
+    public Edge(CustomNode source, CustomNode target, String label) {
         this.source = source;
         this.target = target;
         this.label = label;
     }
 
-    public String getSource() {
-        return source;
-    }
-
-    public String getTarget() {
-        return target;
+    public void setGraphics(String graphics) {
+        this.graphics = graphics;
     }
 
     @Override
     public String toString() {
-        return String.format("edge [\n\t\tsource %s\n\t\ttarget %s\n\t\tlabel %s\n\t]\n\t", source, target, label);
+        return String.format("edge [\n\t\tsource %d\n\t\ttarget %d\n\t\tlabel \"%s\"\n\t", source.getId(),
+                target.getId(), label) + "\t graphics [width 1 type \"line\" fill \"#000000\" arrow \"last\"] ]"+ "\n";
     }
 }

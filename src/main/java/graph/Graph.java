@@ -1,7 +1,6 @@
 package graph;
 
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.Set;
 
 public class Graph {
@@ -16,6 +15,7 @@ public class Graph {
     @Override
     public String toString() {
         StringBuilder stringBuilder = new StringBuilder();
+        stringBuilder.append("Creator \"Graph\" \n");
         stringBuilder.append("graph [\r\n\t");
         for (CustomNode node : nodes) {
             stringBuilder.append(node.toString());
@@ -25,9 +25,5 @@ public class Graph {
         }
         stringBuilder.append("\r]");
         return stringBuilder.toString();
-    }
-
-    public String toGML() {
-        return "";
     }
 }

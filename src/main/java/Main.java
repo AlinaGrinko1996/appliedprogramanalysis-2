@@ -10,6 +10,7 @@ import java.util.Objects;
 
 public class Main {
     public static File DIRECTORY = new File(".\\examples");
+    private static File DIRECTORY_WINDOWS = new File(".\\examplesAdvanced");
 
     public static void main(String... args) throws IOException {
 
@@ -24,7 +25,7 @@ public class Main {
 //            VoidVisitor<?> classContainmentVisitor = new ClassContainmentVisitor(classHierarchyGraph, metricsTables);
 //            classContainmentVisitor.visit(compilationUnit, null);
         }
-        outputToFile(classContainmentGraph.toGML(), "graph.gml");
+        outputToFile(classContainmentGraph.toString(), "graph.gml");
     }
 
     private static void outputToFile(String output, String filename) throws IOException {
