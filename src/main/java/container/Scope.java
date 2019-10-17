@@ -20,6 +20,14 @@ public class Scope {
         this.nodeCounter = graph.nodes.size();
     }
 
+    public String getCurrentClass() {
+        return currentClass;
+    }
+
+    public String getCurrentMethod() {
+        return currentMethod;
+    }
+
     public Graph getGraph() {
         return graph;
     }
@@ -63,6 +71,7 @@ public class Scope {
             case METHOD:
             case CONSTRUCTOR: {
                 currentMethod = "";
+                break;
             }
         }
 
@@ -71,5 +80,15 @@ public class Scope {
             Edge edge = new Edge(nodeBefore, lastNode, "");
             graph.edges.add(edge);
         }
+    }
+
+    public int getAmountOfLoopsInStack() {
+        int counter = 0;
+        for (CustomNode node: lastNodes) {
+            if (node.getType() == NodeType.LOOP_STATEMENT) {
+                counter++;
+            }
+        }
+        return counter;
     }
 }

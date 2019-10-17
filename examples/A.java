@@ -21,6 +21,15 @@ class A {
         }
 
         public static void main(String... args) {
+            for (int i = 0; i <= 100; i++) {
+                int g = 0;
+                for (int h = 0; h <= 100; h++) {
+                    while (g < 67) {
+                        for(int i = 0; i <= 100; i++) {}
+                        g++;
+                    }
+                }
+            }
             b();
         }
     }
