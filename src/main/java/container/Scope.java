@@ -60,13 +60,18 @@ public class Scope {
         lastNodes.push(node);
     }
 
+    public void addMethodCall(String methodCallName, NodeType nodeType) {
+        CustomNode node = new CustomNode(++nodeCounter, nodeType, methodCallName);
+        lastNodes.push(node);
+    }
+
     public void leaveScope() {
         CustomNode lastNode = lastNodes.pop();
         graph.nodes.add(lastNode);
 
         switch (lastNode.getType()) {
             case CLASS : {
-                currentClass = "";
+                currentClass = getNextClassInStack();
             }
             case METHOD:
             case CONSTRUCTOR: {
@@ -82,7 +87,7 @@ public class Scope {
         }
     }
 
-    public int getAmountOfLoopsInStack() {
+    int getAmountOfLoopsInStack() {
         int counter = 0;
         for (CustomNode node: lastNodes) {
             if (node.getType() == NodeType.LOOP_STATEMENT) {
@@ -90,5 +95,15 @@ public class Scope {
             }
         }
         return counter;
+    }
+
+    String getNextClassInStack() {
+        for (CustomNode node: lastNodes) {
+            if ((node.getType() == NodeType.CLASS)
+                    || node.getType() == NodeType.INTERFACE) {
+                return node.getLabel();
+            }
+        }
+        return "";
     }
 }

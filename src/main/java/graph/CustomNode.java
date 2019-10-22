@@ -28,6 +28,22 @@ public class CustomNode {
         return nodeType;
     }
 
+    public void setNodeType(NodeType nodeType) {
+        this.nodeType = nodeType;
+    }
+
+    public NodeType getNodeType() {
+        return nodeType;
+    }
+
+    public String getLabel() {
+        return label;
+    }
+
+    public void setLabel(String label) {
+        this.label = label;
+    }
+
     public void setGraphics(String graphics) {
         this.graphics = graphics;
     }

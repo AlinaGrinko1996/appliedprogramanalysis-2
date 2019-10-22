@@ -9,54 +9,26 @@ import java.util.List;
 
 public class DrawingUtils {
     //Point Graphics
-    private static String POINT_GRAPHICS = "graphics\n" +
-            "\t\t[\n" +
-            "\t\t\tx\t%d\n" +
-            "\t\t\ty\t%d\n" +
-            "\t\t\tw\t5.0\n" +
-            "\t\t\th\t5.0\n" +
-            "\t\t\ttype\t\"ellipse\"\n" +
-            "\t\t\traisedBorder\t0\n" +
-            "\t\t\tfill\t\"#ffffff\"\n" +
-            "\t\t\toutline\t\"#ffffff\"\n" +
-            "\t\t] ]\n";
-    private static String POINT_GRAPHICS_LABELED = "graphics\n" +
-            "\t\t[\n" +
-            "\t\t\tx\t%d\n" +
-            "\t\t\ty\t%d\n" +
-            "\t\t\tw\t5.0\n" +
-            "\t\t\th\t5.0\n" +
-            "\t\t\ttype\t\"ellipse\"\n" +
-            "\t\t\traisedBorder\t0\n" +
-            "\t\t\tfill\t\"#000000\"\n" +
-            "\t\t\toutline\t\"#000000\"\n" +
-            "\t\t] LabelGraphics\n" +
-            "\t\t[\n" +
-            "\t\t\ttext\t\"%s\"\n" +
-            "\t\t\tfontSize\t16\n" +
-            "\t\t\tfontName\t\"Dialog\"\n" +
-            "\t\t\talignment\t\"left\"\n" +
-            "\t\t\tanchor\t\"c\"\n" +
-            "\t\t\tborderDistance\t40.0\n" +
-            "\t\t] ]\n";
+    private static String POINT_GRAPHICS = "graphics\n[\n" +
+            "\tx\t%d\n\ty\t%d\n\tw\t5.0\n\th\t5.0\n" +
+            "\ttype\t\"ellipse\"\n\traisedBorder\t0\n" +
+            "\tfill\t\"#ffffff\"\n\toutline\t\"#ffffff\"\n] ]\n";
+    private static String POINT_GRAPHICS_LABELED = "graphics\n[\n" +
+            "\tx\t%d\n\ty\t%d\n\tw\t5.0\n\th\t5.0\n" +
+            "\ttype\t\"ellipse\"\n\traisedBorder\t0\n" +
+            "\tfill\t\"#ffffff\"\n\toutline\t\"#ffffff\"\n" +
+            "] LabelGraphics\n[\n\ttext\t\"%s\"\n" +
+            "\tfontSize\t16\n\tfontName\t\"Dialog\"\n" +
+            "\talignment\t\"left\"\n\tanchor\t\"c\"\n" +
+            "\tborderDistance\t40.0\n] ]\n";
     private static String AXIS_GRAPHICS = "\tgraphics\n\t\t[\n\t\t\tfill\t\"#000000\"\n" +
             "\t\t\ttargetArrow\t\"standard\"\n\t\t] ]\n";
-    private static String CLASS_NODE_GRAPHICS = "graphics\n" +
-            "\t\t[\n" +
-            "\t\t\tx\t%d\n" +
-            "\t\t\ty\t%d\n" +
-            "\t\t\tw\t10.0\n" +
-            "\t\t\th\t10.0\n" +
-            "\t\t\ttype\t\"ellipse\"\n" +
-            "\t\t\traisedBorder\t0\n" +
-            "\t\t\tfill\t\"#FFCC00\"\n" +
-            "\t\t\thasOutline\t0\n" +
-            "\t\t] ]\n";
-    private static String DASHED_LINE_GRAPHICS = "graphics\n" +
-            "\t\t[\n" +
-            "\t\t\tstyle\t\"dotted\"\n" +
-            "\t\t\tfill\t\"#000000\"\n" +
-            "\t\t] ]\n";
+    private static String CLASS_NODE_GRAPHICS = "graphics\n[\n" +
+            "\tx\t%d\n\ty\t%d\n\tw\t10.0\n\th\t10.0\n" +
+            "\ttype\t\"ellipse\"\n\traisedBorder\t0\n" +
+            "\tfill\t\"#FFCC00\"\n\thasOutline\t0\n] ]\n";
+    private static String DASHED_LINE_GRAPHICS = "graphics\n[\n" +
+            "\tstyle\t\"dotted\"\n\tfill\t\"#000000\"\n] ]\n";
 
     //Magic numbers
     private static int X_MAX = 600;
@@ -70,7 +42,8 @@ public class DrawingUtils {
         String labelY = (setOfMetric > 0) ? "RFC" : "NOM";
         //Drawing axis
         CustomNode pointY = new CustomNode(0, labelY);
-        pointY.setGraphics(String.format(POINT_GRAPHICS_LABELED, X_0, Y_MAX, labelY));
+        //30 pixels added here are used to avoid overlapping
+        pointY.setGraphics(String.format(POINT_GRAPHICS_LABELED, X_0, Y_MAX - 30, labelY));
         chart.nodes.add(pointY);
 
         CustomNode point0 = new CustomNode(1, "0");
@@ -78,7 +51,8 @@ public class DrawingUtils {
         chart.nodes.add(point0);
 
         CustomNode pointX = new CustomNode(2, "WMC");
-        pointX.setGraphics(String.format(POINT_GRAPHICS_LABELED, X_MAX, Y_0, "WMC"));
+        //30 pixels added here are used to avoid overlapping
+        pointX.setGraphics(String.format(POINT_GRAPHICS_LABELED, X_MAX + 30, Y_0, "WMC"));
         chart.nodes.add(pointX);
 
         Edge axisY = new Edge(point0, pointY, "");
@@ -88,6 +62,7 @@ public class DrawingUtils {
         Edge axisX = new Edge(point0, pointX, "");
         axisX.setGraphics(AXIS_GRAPHICS);
         chart.edges.add(axisX);
+        //End drawing axis
 
         MetricsOfClass maxMetrics = getMaximumMetrics(classes);
 
@@ -101,6 +76,7 @@ public class DrawingUtils {
             int x = X_0 + (metricX * (X_MAX - X_0)) / maxMetricX;
             int y = Y_0 - (metricY * (Y_0 - Y_MAX)) / maxMetricY;
 
+            //Begin nodes
             CustomNode classY = new CustomNode(nodeIterator++, metricY + "");
             classY.setGraphics(String.format(POINT_GRAPHICS, X_0, y));
             chart.nodes.add(classY);
@@ -112,7 +88,9 @@ public class DrawingUtils {
             CustomNode classX = new CustomNode(nodeIterator++, metricX + "");
             classX.setGraphics(String.format(POINT_GRAPHICS, x, Y_0));
             chart.nodes.add(classX);
+            //End nodes
 
+            //Begin edges
             Edge dashY = new Edge(class0, classY, "");
             dashY.setGraphics(DASHED_LINE_GRAPHICS);
             chart.edges.add(dashY);
@@ -120,6 +98,7 @@ public class DrawingUtils {
             Edge dashX = new Edge(class0, classX, "");
             dashX.setGraphics(DASHED_LINE_GRAPHICS);
             chart.edges.add(dashX);
+            //End edges
         }
         return chart.toString();
     }

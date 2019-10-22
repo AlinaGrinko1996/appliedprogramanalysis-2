@@ -11,9 +11,8 @@ import java.util.Objects;
 import java.util.Scanner;
 
 public class Main {
-    public static File DIRECTORY = new File(".\\examples");
-    private static File DIRECTORY_WINDOWS = new File(".\\examplesAdvanced");
-    private static File DIRECTORY_LINUX = new File("./examplesAdvanced");
+    private static File DIRECTORY_WINDOWS = new File(".\\examples");
+    private static File DIRECTORY_LINUX = new File("./examples");
 
     public static void main(String... args) throws IOException {
         Scanner in = new Scanner(System.in);

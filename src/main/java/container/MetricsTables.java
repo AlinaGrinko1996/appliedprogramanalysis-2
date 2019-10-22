@@ -21,7 +21,6 @@ public class MetricsTables {
         }
     }
 
-    //todo - NB here i should say that i am taking uniqness into account
     public void addMethodCalled(String currentClass, String methodCalled) {
         if (!methodsCalled.containsKey(currentClass)) {
             Set<String> methods = new HashSet<>();

@@ -6,6 +6,8 @@ class Z {
     }
 
     private C b() {
+        for (int h = 0; h <= 100; h++) {
+        }
         method1();
         new C().method2();
         return new C();

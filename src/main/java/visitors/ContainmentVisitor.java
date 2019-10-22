@@ -8,13 +8,14 @@ import com.github.javaparser.ast.stmt.*;
 import com.github.javaparser.ast.visitor.VoidVisitorAdapter;
 import container.MetricsTables;
 import container.Scope;
+import graph.CustomNode;
 import graph.Graph;
+import graph.NodeType;
 
 public class ContainmentVisitor extends VoidVisitorAdapter<Void> {
     private Scope scope;
     private MetricsTables metricsTables;
 
-    //todo - NB class hierarchy?
     public ContainmentVisitor(Graph graph, MetricsTables metricsTables) {
         super();
         scope = new Scope();
@@ -41,7 +42,6 @@ public class ContainmentVisitor extends VoidVisitorAdapter<Void> {
     public void visit(final ConstructorDeclaration n, Void arg) {
         scope.enterConstructor(n.getNameAsString());
         super.visit(n, arg);
-        //todo - NB i should mention that i calculate constructors as classes
         metricsTables.incrementNumberOfMethods(scope.getCurrentClass());
         scope.leaveScope();
     }
@@ -86,11 +86,18 @@ public class ContainmentVisitor extends VoidVisitorAdapter<Void> {
 
     @Override
     public void visit(final MethodCallExpr n, Void arg) {
+        CustomNode temporaryCallNode = new CustomNode(0, NodeType.INNER_CALL_STATEMENT, "Call: "+ n.getNameAsString());
         super.visit(n, arg);
         n.getScope().ifPresent(callScope -> {
             if (!callScope.isThisExpr()) {
                 metricsTables.addMethodCalled(scope.getCurrentClass(), n.getNameAsString());
+                temporaryCallNode.setNodeType(NodeType.OUTER_CALL_STATEMENT);
+                temporaryCallNode.setLabel(String.format("PCall: %s", n.getNameAsString()));
+            } else {
+                temporaryCallNode.setLabel("Call: this." + n.getNameAsString());
             }
         });
+        scope.addMethodCall(temporaryCallNode.getLabel(), temporaryCallNode.getNodeType());
+        scope.leaveScope();
     }
 }
