@@ -1,4 +1,4 @@
-class X extends A {
+class X {
     public X() {
         super();
     }
@@ -9,7 +9,7 @@ class X extends A {
             }
         }
         method1();
-        new C().method2();
+        new A().method2();
         return new C();
     }
 
