@@ -10,6 +10,11 @@ public class MetricsOfClass {
         this.className = className;
     }
 
+    //todo test comment
+    //test comment same line
+
+    //another single comment
+    //single satd comment fix me
     public String getClassName() {
         return className;
     }
