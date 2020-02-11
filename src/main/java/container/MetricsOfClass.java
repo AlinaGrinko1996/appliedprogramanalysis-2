@@ -12,9 +12,6 @@ public class MetricsOfClass {
 
     //todo test comment
     //test comment same line
-
-    //another single comment
-    //single satd comment fix me
     public String getClassName() {
         return className;
     }
@@ -43,11 +40,6 @@ public class MetricsOfClass {
         this.RFC = RFC;
     }
 
-    /*test block comment
-    test
-    block
-    comment
-     */
     @Override
     public String toString() {
         return String.format("Class %s\n\tNOM: %d\tWMC: %d\tRFC: %d\n", className, NOM, WMC, RFC);
