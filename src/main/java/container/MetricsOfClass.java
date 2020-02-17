@@ -36,6 +36,7 @@ public class MetricsOfClass {
         return RFC;
     }
 
+    //stupid (is not)
     public void setRFC(int RFC) {
         this.RFC = RFC;
     }
